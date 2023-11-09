@@ -33,8 +33,9 @@ class WebViewExample extends StatefulWidget {
 class _WebViewExampleState extends State<WebViewExample> {
   late final WebViewController _controller;
 
+  bool web_view = false;
 
-  String initial_url = 'https://github.com/ArianFotouhi/';
+  // String initial_url = 'https://github.com/ArianFotouhi/';
 
 
 
@@ -61,15 +62,14 @@ class _WebViewExampleState extends State<WebViewExample> {
 
     final WebViewController controller =
     WebViewController.fromPlatformCreationParams(params);
-    // #enddocregion platform_features
 
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
+      ..setBackgroundColor(const Color(0x00000000));
 
-
-      ..loadRequest(Uri.parse(initial_url));
+      // initial url
+      // ..loadRequest(Uri.parse(initial_url));
 
 
     _controller = controller;
@@ -82,7 +82,8 @@ class _WebViewExampleState extends State<WebViewExample> {
         appBar: AppBar(
           actions: [
             ElevatedButton(onPressed: () async {
-              // Example payload: {'key1': 'value1', 'key2': 'value2'}
+
+
               Map<String, dynamic> payload = {
                 'username': 'chris_hall',
                 'lounge_id': 'lg_12412',
@@ -98,12 +99,15 @@ class _WebViewExampleState extends State<WebViewExample> {
 
               _controller.loadRequest(Uri.parse(result));
 
+              setState(() {
+                web_view = true;
+              });
             },
               child: Text('Checkout'),
             ),
           ],
         ),
-        body: WebViewWidget(controller: _controller)
+        body: web_view? WebViewWidget(controller: _controller): Text('For payment please click on Checkout')
 
         );
   }
