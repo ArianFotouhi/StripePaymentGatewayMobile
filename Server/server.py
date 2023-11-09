@@ -6,6 +6,8 @@ from config.settings import strip_key
 app = Flask(__name__)
 stripe.api_key = strip_key
 
+server_address = 'http://127.0.0.1:5000'
+
 
 @app.route('/get_link', methods = ['GET', 'POST'])
 def get_link():
@@ -26,9 +28,9 @@ def get_link():
         product=prod_id["id"],
     )
 
-    success_url = f"http://127.0.0.1:5000/payment_success?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}"
+    success_url = f"{server_address}/payment_success?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}"
 
-    cancel_url = f'http://127.0.0.1:5000/payment_fail?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}'
+    cancel_url = f'{server_address}/payment_fail?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}'
 
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
