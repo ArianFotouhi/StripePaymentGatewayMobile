@@ -1,11 +1,36 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Successful Payment</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #00aaff;
+    }
+    .container {
+      margin-top: 50px;
+      text-align: center;
+    }
+    h1 {
+      color: white;
+    }
+    h2 {
+      color: #03366d;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
     <h1>Successful Payment!</h1>
-    <p>Reserved by username: {{username}}</p>
-    <p>From {{from_date}} to {{to_date}}</p>
+    <hr>
+    <h2>Reserved by: {{username}}</h2>
+    <h2>From {{from_date}} to {{to_date}}</h2>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
