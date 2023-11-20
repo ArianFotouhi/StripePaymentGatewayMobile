@@ -42,9 +42,18 @@ def get_link():
         product=prod_id["id"],
     )
 
-    success_url = f"{server_address}/payment_success?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}"
 
-    cancel_url = f'{server_address}/payment_fail?username={username}&lounge_id={lounge_id}&from_date={from_date}&to_date={to_date}'
+    metadata = {
+            'username': username,
+            'lounge_id': lounge_id,
+            'from_date': from_date,
+            'to_date': to_date,
+            'price': price,
+            'item': item,
+            'currency': currency,
+    }
+    success_url = f"{server_address}/payment_success"
+    cancel_url = f'{server_address}/payment_fail'
 
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
@@ -54,14 +63,12 @@ def get_link():
                 "quantity": 1,
             }
         ],
-        metadata={
-            'item_name': 'LOUNGE A',
-            'reservation_from': '2023-12-10 10:00:00',
-        },
+        metadata=metadata,
         mode="payment",
         success_url=success_url,
         cancel_url=cancel_url,
     )
+
 
     redirect_url = session.url
     return jsonify({'data': redirect_url})
@@ -73,26 +80,15 @@ def get_link():
 @app.route('/payment_success', methods = ['GET', 'POST'])
 def payment_success():
 
-    username = request.args.get('username')
-    lounge_id = request.args.get('lounge_id')
-    from_date = request.args.get('from_date')
-    to_date = request.args.get('to_date')
 
-    #add transaction to the database
 
-    return render_template('pay_success.html', username=username, lounge_id=lounge_id, from_date=from_date, to_date=to_date)
+
+    return render_template('pay_success.html')
 
 
 
 @app.route('/payment_fail', methods = ['GET', 'POST'])
 def payment_fail():
-    
-    username = request.args.get('username')
-    lounge_id = request.args.get('lounge_id')
-    from_date = request.args.get('from_date')
-    to_date = request.args.get('to_date')
-
-    #add transaction to the database
 
     return render_template('pay_fail.html')
 
