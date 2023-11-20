@@ -1,10 +1,24 @@
 from flask import Flask, request, jsonify , render_template
 import stripe
-from config.settings import strip_key
 
+#########################stripe config#####################
+import configparser
+config = configparser.ConfigParser()
+config.read('config/setting.ini')
+# Access values from the INI file
+secret_key = config['KEYS']['SECRET_KEY']
+publish_key = config['KEYS']['PUBLISH_KEY']
+endpoint_secret = config['KEYS']['ENDPOINT_KEY']
+
+stripe_keys = {
+  'secret_key': secret_key,
+  'publishable_key': publish_key
+}
+stripe.api_key = stripe_keys['secret_key']
+
+###########################################################
 
 app = Flask(__name__)
-stripe.api_key = strip_key
 
 server_address = 'http://127.0.0.1:5000'
 
@@ -84,7 +98,52 @@ def payment_fail():
 
 
 
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    event = None
+    payload = request.data
 
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event['type'] == 'checkout.session.async_payment_failed':
+      session = event['data']['object']
+
+
+    elif event['type'] == 'checkout.session.async_payment_succeeded':
+      session = event['data']['object']
+      data = session['metadata']
+      with open('example.txt','w') as file:
+
+          file.write(str(data))
+
+    elif event['type'] == 'checkout.session.completed':
+      session = event['data']['object']
+      data = session['metadata']
+      with open('example.txt','w') as file:
+
+        file.write(str(data))
+
+    elif event['type'] == 'checkout.session.expired':
+      session = event['data']['object']
+    # ... handle other event types
+    else:
+      print('Unhandled event type {}'.format(event['type']))
+
+    return jsonify(success=True)
 
 
 if __name__ == "__main__":
