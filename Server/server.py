@@ -40,6 +40,10 @@ def get_link():
                 "quantity": 1,
             }
         ],
+        metadata={
+            'item_name': 'LOUNGE A',
+            'reservation_from': '2023-12-10 10:00:00',
+        },
         mode="payment",
         success_url=success_url,
         cancel_url=cancel_url,
